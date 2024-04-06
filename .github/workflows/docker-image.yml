@@ -34,21 +34,24 @@ jobs:
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          NEWVERSION: ${{steps.version.outputs.version}}
+          
         run: |
           echo "iniciando login" 
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-          echo "new version $NEWVERSION!!!!!!!!!!!!!!!!"
 
-      # - name: Build docker image
-      #   run:  |
-      #     docker build -t joardo/docker-graphql:0.0.2 .
-      #     docker build -t joardo/docker-graphql:latest .
+      - name: Build docker image
+        env:
+          NEWVERSION: ${{steps.version.outputs.version}}
+        run:  |
+          docker build -t joardo/docker-graphql:$NEWVERSION .
+          docker build -t joardo/docker-graphql:latest .
         
-      # - name: Push docker image
-      #   run:  |
-      #     docker push joardo/docker-graphql:0.0.2
-      #     docker push joardo/docker-graphql:latest
+      - name: Push docker image
+        env:
+          NEWVERSION: ${{steps.version.outputs.version}}
+        run:  |
+          docker push joardo/docker-graphql:$NEWVERSION
+          docker push joardo/docker-graphql:latest
         
           
         
